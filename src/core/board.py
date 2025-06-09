@@ -1,6 +1,8 @@
 from src.core.cell import Cell
 from typing import List, Optional
 
+from random import randint
+
 
 class Board:
     def __init__(self, width: int, height: int) -> None:
@@ -37,3 +39,8 @@ class Board:
         if 0 <= x < self.__width and 0 <= y < self.__height:
             return self.__cells[y][x]
         return None
+    
+    def get_random_cell(self) -> Cell:
+        x = randint(0, self.__width - 1)
+        y = randint(0, self.__height - 1)
+        return self.get_cell(x, y)

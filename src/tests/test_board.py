@@ -33,6 +33,12 @@ class TestBoard(unittest.TestCase):
         out_of_bounds_cell = self.board.get_cell(10, 10)
         self.assertIsNone(out_of_bounds_cell)
 
+    def test_get_random_cell(self):
+        cell = self.board.get_random_cell()
+        self.assertIsNotNone(cell)
+        self.assertIn(cell, [c for row in self.board.cells for c in row])
+        self.assertEqual(cell.adjacent_mines, 0)
+        
 
 if __name__ == "__main__":
     unittest.main()
