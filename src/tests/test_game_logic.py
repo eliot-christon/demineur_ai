@@ -1,10 +1,11 @@
 from src.core.game_logic import GameLogic
+from src.core.player import HumanPlayer
 import unittest
 
 class TestGameLogic(unittest.TestCase):
     def setUp(self):
-        self.game_logic_no_mines = GameLogic(width=5, height=5, mine_count=0, player_name="TestPlayer1")
-        self.game_logic_only_mines = GameLogic(width=5, height=5, mine_count=25, player_name="TestPlayer2")
+        self.game_logic_no_mines = GameLogic(width=5, height=5, mine_count=0, player=HumanPlayer(name="TestPlayer1"))
+        self.game_logic_only_mines = GameLogic(width=5, height=5, mine_count=25, player=HumanPlayer(name="TestPlayer2"))
         
     def test_initial_state(self):
         self.assertFalse(self.game_logic_no_mines.is_game_over())

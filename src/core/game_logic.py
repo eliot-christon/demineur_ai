@@ -3,13 +3,13 @@ from src.core.player import Player
 
 
 class GameLogic:
-    def __init__(self, width: int, height: int, mine_count: int, player_name: str) -> None:
+    def __init__(self, width: int, height: int, mine_count: int, player: Player) -> None:
         """Initialize the game logic with a board of given dimensions and mine count."""
         self.__board = Board(width, height)
         self.__mine_count = mine_count
         self.__place_mines()
         self.__init_adjacent_mine_counts()
-        self.__player = Player(player_name)
+        self.__player = player
         self.__game_over = False
         self.__game_won = False
         
@@ -46,7 +46,6 @@ class GameLogic:
         cell = self.__board.get_cell(x, y)
         
         if cell is None:
-            self.__player.notify(f"{self.__player.name} made an invalid move: ({x}, {y}). Cell does not exist.")
             return False
         
         if action == "reveal":
@@ -54,22 +53,16 @@ class GameLogic:
             if cell.is_mine():
                 self.__game_over = True
                 self.__game_won = False
-                self.__player.notify(f"{self.__player.name} hit a mine at ({x}, {y}). Game Over!")
             else:
-                self.__player.notify(f"{self.__player.name} revealed cell at ({x}, {y}).")
                 if self.__check_win_condition():
                     self.__game_over = True
                     self.__game_won = True
-                    self.__player.notify(f"{self.__player.name} has won the game!")
         elif action == "flag":
             if not cell.is_revealed():
                 cell.toggle_flag()
-                self.__player.notify(f"{self.__player.name} toggled flag at ({x}, {y}).")
             else:
-                self.__player.notify(f"{self.__player.name} cannot flag a revealed cell at ({x}, {y}).")
                 return False
         else:
-            self.__player.notify(f"{self.__player.name} made an invalid move: ({x}, {y}) with action: {action}.")
             return False
         
         return True

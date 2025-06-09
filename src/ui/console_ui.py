@@ -10,7 +10,11 @@ class ConsoleUI:
         print(f"Welcome to Minesweeper, {self.game_logic.player.name}!")
         while not self.game_logic.is_game_over():
             self.display_board()
-            action = input("Enter your move (x y action): ").strip().split()
+            action = self.game_logic.player.make_move(self.game_logic.board)
+            if action is None:
+                action = input("Enter your move (x y action): ").strip().split()
+            if len(action) == 2:
+                action.append("reveal")
             if len(action) != 3:
                 print("Invalid input. Please enter in the format: x y action")
                 continue
@@ -23,6 +27,7 @@ class ConsoleUI:
             except ValueError:
                 print("Invalid coordinates. Please enter integers for x and y.")
 
+        self.display_board()
         self.display_result()
 
     def display_board(self) -> None:
@@ -54,6 +59,7 @@ class ConsoleUI:
 
 # Example usage:
 if __name__ == "__main__":
-    game_logic = GameLogic(width=5, height=5, mine_count=5, player_name="Player1")
+    from src.core.player import HumanPlayer, RandomPlayer
+    game_logic = GameLogic(width=5, height=5, mine_count=5, player=HumanPlayer(name="Player1"))
     console_ui = ConsoleUI(game_logic)
     console_ui.start_game()

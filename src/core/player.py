@@ -1,12 +1,14 @@
-from src.core.observer import Observer
+from src.core.board import Board
 
-from typing import List
+from typing import Tuple, Optional
+from abc import ABC, abstractmethod
+from random import randint
 
-class Player:
+class Player(ABC):
+    """Abstract base class for a player in the game."""
     def __init__(self, name: str) -> None:
         """Initialize the player with a name."""
         self.__name = name
-        self._observers = list[Observer]()
 
     def __repr__(self) -> str:
         return f"Player(name={self.__name})"
@@ -23,23 +25,34 @@ class Player:
     def name(self) -> str:
         return self.__name
 
-    def attach(self, observer: Observer) -> None:
-        """Attach an observer to the player."""
-        if observer not in self._observers:
-            self._observers.append(observer)
-    
-    def detach(self, observer: Observer) -> None:
-        """Detach an observer from the player."""
-        if observer in self._observers:
-            self._observers.remove(observer)
-    
-    def notify(self, message: str) -> None:
-        """Notify all observers with a message."""
-        for observer in self._observers:
-            observer.update(message)
+    @abstractmethod
+    def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
+        """Make a move with the specified action at coordinates (x, y).
+        returns a tuple containing the x, y coordinates and the action as a string.
+        For the user interface to take input from human player we return None."""
+        pass
 
-    def make_move(self, x: int, y: int, action: str) -> None:
-        """Make a move with the specified action at coordinates (x, y)."""
-        #TODO: Implement actual move logic
-        self.notify(f"{self.__name} made move: ({x}, {y}) with action: {action}")
+
+class HumanPlayer(Player):
     
+    def __init__(self, name: str) -> None:
+        """Initialize the human player with a name."""
+        super().__init__(name)
+        
+    """Concrete class for a human player."""
+    def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
+        return None
+
+class RandomPlayer(Player):
+    
+    def __init__(self, name: str) -> None:
+        """Initialize the random player with a name."""
+        super().__init__(name)
+        
+    """Concrete class for a random player."""
+    def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
+        """Make a random move on the board."""
+        x = randint(0, board.width - 1)
+        y = randint(0, board.height - 1)
+        action = "reveal"
+        return x, y, action
