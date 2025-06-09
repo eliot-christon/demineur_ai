@@ -44,3 +44,7 @@ class Board:
         x = randint(0, self.__width - 1)
         y = randint(0, self.__height - 1)
         return self.get_cell(x, y)
+    
+    def get_revealed_count(self) -> int:
+        """Count the number of revealed cells."""
+        return sum(cell.is_revealed() for row in self.__cells for cell in row)

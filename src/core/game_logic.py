@@ -16,6 +16,8 @@ class GameLogic:
     def __place_mines(self) -> None:
         """Randomly place mines on the board."""
         count = 0
+        if self.__mine_count > self.__board.width * self.__board.height:
+            raise ValueError("Mine count exceeds the number of cells on the board.")
         while count < self.__mine_count:
             cell = self.__board.get_random_cell()
             if not cell.is_mine():

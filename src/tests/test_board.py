@@ -39,6 +39,20 @@ class TestBoard(unittest.TestCase):
         self.assertIn(cell, [c for row in self.board.cells for c in row])
         self.assertEqual(cell.adjacent_mines, 0)
         
+    def test_get_revealed_count(self):
+        # Initially, no cells are revealed
+        self.assertEqual(self.board.get_revealed_count(), 0)
+        
+        # Reveal a cell and check the count
+        cell = self.board.get_cell(0, 0)
+        cell.reveal()
+        self.assertEqual(self.board.get_revealed_count(), 1)
+        
+        # Reveal another cell
+        cell = self.board.get_cell(1, 1)
+        cell.reveal()
+        self.assertEqual(self.board.get_revealed_count(), 2)
+        
 
 if __name__ == "__main__":
     unittest.main()
