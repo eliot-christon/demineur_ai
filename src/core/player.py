@@ -80,6 +80,11 @@ class ProbaPlayer(Player):
         
         #TODO: optimize is a key to the performance of this function, as it is called every turn.
         
+        # Precompute directions for neighbor checks
+        directions = [(-1, -1), (-1, 0), (-1, 1),
+                       (0, -1),          (0, 1),
+                       (1, -1),  (1, 0), (1, 1)]
+        
         for y in range(board.height):
             for x in range(board.width):
                 cell = board.get_cell(x, y)
@@ -89,39 +94,33 @@ class ProbaPlayer(Player):
                     # count first the unrevealed neighbors
                     unrevealed_neighbors = 0
                     flagged_neighbors = 0
-                    for dy in range(-1, 2):
-                        for dx in range(-1, 2):
-                            if dx == 0 and dy == 0:
-                                continue
-                            nx, ny = x + dx, y + dy
-                            if 0 <= nx < board.width and 0 <= ny < board.height:
-                                neighbor_cell = board.get_cell(nx, ny)
-                                if neighbor_cell.is_flagged():
-                                    flagged_neighbors += 1
-                                elif not neighbor_cell.is_revealed():
-                                    unrevealed_neighbors += 1
-                                    # put the probability of being a mine to 0.
-                                    prob_table[ny][nx] = 0 if prob_table[ny][nx] < 0 else prob_table[ny][nx]
+                    for dy, dx in directions:
+                        nx, ny = x + dx, y + dy
+                        if 0 <= nx < board.width and 0 <= ny < board.height:
+                            neighbor_cell = board.get_cell(nx, ny)
+                            if neighbor_cell.is_flagged():
+                                flagged_neighbors += 1
+                            elif not neighbor_cell.is_revealed():
+                                unrevealed_neighbors += 1
+                                # put the probability of being a mine to 0.
+                                prob_table[ny][nx] = 0 if prob_table[ny][nx] < 0 else prob_table[ny][nx]
                                     
                     if unrevealed_neighbors > 0:
                         # distribute the probability of being a mine to the neighbors
-                        for dy in range(-1, 2):
-                            for dx in range(-1, 2):
-                                if dx == 0 and dy == 0:
-                                    continue
-                                nx, ny = x + dx, y + dy
-                                if 0 <= nx < board.width and 0 <= ny < board.height:
-                                    neighbor_cell = board.get_cell(nx, ny)
-                                    if not neighbor_cell.is_revealed() and not neighbor_cell.is_flagged():
-                                        potential_new_prob = (cell.adjacent_mines - flagged_neighbors + 0.01) / unrevealed_neighbors
-                                        if prob_table[ny][nx] <= 0:
-                                            prob_table[ny][nx] = potential_new_prob
+                        for dy, dx in directions:
+                            nx, ny = x + dx, y + dy
+                            if 0 <= nx < board.width and 0 <= ny < board.height:
+                                neighbor_cell = board.get_cell(nx, ny)
+                                if not neighbor_cell.is_revealed() and not neighbor_cell.is_flagged():
+                                    potential_new_prob = (cell.adjacent_mines - flagged_neighbors + 0.01) / unrevealed_neighbors
+                                    if prob_table[ny][nx] <= 0:
+                                        prob_table[ny][nx] = potential_new_prob
+                                    else:
+                                        # priroritize extrem values, under 0.1 or above 1, for either prob_table or potential_new_prob, else, take the minimum
+                                        if prob_table[ny][nx] > 1.0 or potential_new_prob > 1.0:
+                                            prob_table[ny][nx] = max(prob_table[ny][nx], potential_new_prob)
                                         else:
-                                            # priroritize extrem values, under 0.1 or above 1, for either prob_table or potential_new_prob, else, take the minimum
-                                            if prob_table[ny][nx] > 1.0 or potential_new_prob > 1.0:
-                                                prob_table[ny][nx] = max(prob_table[ny][nx], potential_new_prob)
-                                            else:
-                                                prob_table[ny][nx] = min(prob_table[ny][nx], potential_new_prob)
+                                            prob_table[ny][nx] = min(prob_table[ny][nx], potential_new_prob)
                 elif cell.is_flagged():
                     prob_table[y][x] = -3
         
@@ -151,12 +150,12 @@ class ProbaPlayer(Player):
             return x, y, "reveal"
         
         # if no candidates, return a random cell
-        x = randint(0, board.width - 1)
-        y = randint(0, board.height - 1)
-        while board.get_cell(x, y).is_revealed() or board.get_cell(x, y).is_flagged():
+        # If no candidates, return a random cell
+        while True:
             x = randint(0, board.width - 1)
             y = randint(0, board.height - 1)
-            return x, y, "reveal"
+            if not (board.get_cell(x, y).is_revealed() or board.get_cell(x, y).is_flagged()):
+                return x, y, "reveal"
     
     def display_prob_table(self, prob_table: list) -> None:
         """Display the probability table."""
