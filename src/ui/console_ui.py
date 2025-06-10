@@ -1,9 +1,21 @@
 from src.core.game_logic import GameLogic
+from src.ui.colors import fg, bg
 
 class ConsoleUI:
     def __init__(self, game_logic: GameLogic) -> None:
         """Initialize the console UI with the game logic."""
         self.game_logic = game_logic
+        self.__color_per_char = {
+            "0": fg.green,
+            "1": fg.lightgreen,
+            "2": fg.blue,
+            "3": fg.lightblue,
+            "4": fg.yellow,
+            "5": fg.orange,
+            "6": fg.purple,
+            "7": fg.pink,
+            "8": fg.lightgrey,
+        }
 
     def start_game(self) -> None:
         """Start the game and handle user input."""
@@ -39,13 +51,13 @@ class ConsoleUI:
             for cell in row:
                 if cell.is_revealed():
                     if cell.is_mine():
-                        print("M", end=" ")
+                        print(bg.red + "M" + bg.res, end=" ")
                     else:
-                        print(cell.adjacent_mines, end=" ")
+                        print(self.__color_per_char.get(str(cell.adjacent_mines), "") + str(cell.adjacent_mines) + fg.res, end=" ")
                 elif cell.is_flagged():
-                    print("F", end=" ")
+                    print(bg.orange + fg.bold + "F" + bg.res + fg.res, end=" ")
                 else:
-                    print("?", end=" ")
+                    print(bg.blue + "?" + bg.res, end=" ")
             print("|")
         print("-" * (board.width * 2 + 3))
 

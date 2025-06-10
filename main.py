@@ -7,7 +7,7 @@ from src.ui.console_ui import ConsoleUI
 def main():
     """Main function to start the game."""
     # Initialize the game logic with a human player
-    game_logic = GameLogic(width=12, height=8, mine_count=12, player=ProbaPlayer(name="Player1"))
+    game_logic = GameLogic(width=12, height=8, mine_count=18, player=ProbaPlayer(name="Player1"))
     
     # Create the UI for the game
     ui = GraphicalUI(game_logic)
