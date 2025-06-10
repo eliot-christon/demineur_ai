@@ -113,6 +113,7 @@ class GraphicalUI:
     
     def __init__(self, game_logic:GameLogic) -> None:
         """Initialize the graphical UI with the game logic."""
+        pygame.init()
         self.game_logic = game_logic
         self.board = PygameBoard(name='Minesweeper', dimension=(game_logic.board.width, game_logic.board.height), pixels_per_unit=20)
     
@@ -142,11 +143,15 @@ class GraphicalUI:
             if self.game_logic.is_game_over():
                 running = False
                 
-            self.board.progress = self.game_logic.board.get_revealed_count() / (self.game_logic.board.width * self.game_logic.board.height)
+            self.board.progress = (self.game_logic.board.get_revealed_count() + self.game_logic.board.get_flagged_count())/ (self.game_logic.board.width * self.game_logic.board.height)
             self.board.display(self.game_logic.board)
             self.board.draw_progress_bar()
         # delay for a moment to show the final board state
         pygame.time.delay(1000)
+    
+    def __del__(self) -> None:
+        """Clean up resources when the UI is closed."""
+        pygame.quit()
             
 
 
@@ -155,13 +160,9 @@ if __name__ == "__main__":
     from src.core.player import HumanPlayer, RandomPlayer
     
     # Example usage:
-    pygame.init()
     game_logic = GameLogic(width=10, height=10, mine_count=00, player=HumanPlayer(name="Player1"))
     graphical_ui = GraphicalUI(game_logic)
-    graphical_ui.start_game()
-    
-    pygame.quit()
-    
+    graphical_ui.start_game()    
     
     
     # from pygame.locals import QUIT, MOUSEBUTTONDOWN

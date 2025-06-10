@@ -48,3 +48,7 @@ class Board:
     def get_revealed_count(self) -> int:
         """Count the number of revealed cells."""
         return sum(cell.is_revealed() for row in self.__cells for cell in row)
+    
+    def get_flagged_count(self) -> int:
+        """Count the number of flagged cells."""
+        return sum(cell.is_flagged() for row in self.__cells for cell in row)
