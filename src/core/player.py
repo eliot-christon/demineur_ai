@@ -78,6 +78,8 @@ class ProbaPlayer(Player):
         # build a probability table of the size of the board, fill with -2 when revealed and -3 when flagged
         prob_table = [[-1 for _ in range(board.width)] for _ in range(board.height)]
         
+        #TODO: optimize is a key to the performance of this function, as it is called every turn.
+        
         for y in range(board.height):
             for x in range(board.width):
                 cell = board.get_cell(x, y)
@@ -154,9 +156,7 @@ class ProbaPlayer(Player):
         while board.get_cell(x, y).is_revealed() or board.get_cell(x, y).is_flagged():
             x = randint(0, board.width - 1)
             y = randint(0, board.height - 1)
-        
-        print(f"No safe cells found, revealing random cell at ({x}, {y})")
-        return x, y, "reveal"
+            return x, y, "reveal"
     
     def display_prob_table(self, prob_table: list) -> None:
         """Display the probability table."""
