@@ -55,4 +55,7 @@ class RandomPlayer(Player):
         x = randint(0, board.width - 1)
         y = randint(0, board.height - 1)
         action = "reveal"
+        while board.get_cell(x, y).is_revealed():
+            x = randint(0, board.width - 1)
+            y = randint(0, board.height - 1)
         return x, y, action

@@ -128,21 +128,13 @@ class GraphicalUI:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
-                    # right click to flag a cell
-                    elif event.type == pygame.MOUSEBUTTONUP:
-                        if event.button == 3:  # Right click
-                            print("Right click detected")
-                            pixel_pos = event.pos
-                            pos = self.board.pixel2pos(pix_pos=pixel_pos)
-                            if pos[0] < self.game_logic.board.width and pos[1] < self.game_logic.board.height:
-                                print("flagging")
-                                action = (pos[0], pos[1], "flag")
-                                self.game_logic.make_move(*action)
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         pixel_pos = event.pos
                         pos = self.board.pixel2pos(pix_pos=pixel_pos)
                         if pos[0] < self.game_logic.board.width and pos[1] < self.game_logic.board.height:
                             action = (pos[0], pos[1], "reveal")
+                            if event.button == 3:  # Right click
+                                action = (pos[0], pos[1], "flag")
                             self.game_logic.make_move(*action)
             else:
                 self.game_logic.make_move(*action)
@@ -164,7 +156,7 @@ if __name__ == "__main__":
     
     # Example usage:
     pygame.init()
-    game_logic = GameLogic(width=3, height=5, mine_count=1, player=RandomPlayer(name="Player1"))
+    game_logic = GameLogic(width=10, height=10, mine_count=00, player=HumanPlayer(name="Player1"))
     graphical_ui = GraphicalUI(game_logic)
     graphical_ui.start_game()
     
