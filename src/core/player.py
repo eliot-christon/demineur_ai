@@ -88,8 +88,8 @@ class ProbaPlayer(Player):
         
         # Precompute directions for neighbor checks
         directions = [(-1, -1), (-1, 0), (-1, 1),
-                       (0, -1),          (0, 1),
-                       (1, -1),  (1, 0), (1, 1)]
+                       (0, -1),           (0, 1),
+                       (1, -1),  (1, 0),  (1, 1)]
         
         for y in range(board.height):
             for x in range(board.width):
@@ -144,7 +144,7 @@ class ProbaPlayer(Player):
             lowest_prob = min(prob for row in prob_table for prob in row if prob >= 0)
             not_mine_candidates = [(x, y) for y in range(board.height) for x in range(board.width) if prob_table[y][x] == lowest_prob]
             x, y = not_mine_candidates[randint(0, len(not_mine_candidates) - 1)]
-            self.__memory[x][y] = -2  # Mark as revealed
+            self.__memory[y][x] = -2  # Mark as revealed
             return x, y, "reveal"
         
         # if no candidates, return a random cell
@@ -153,7 +153,7 @@ class ProbaPlayer(Player):
             x = randint(0, board.width - 1)
             y = randint(0, board.height - 1)
             if not (board.get_cell(x, y).is_revealed() or board.get_cell(x, y).is_flagged()):
-                self.__memory[x][y] = -2  # Mark as revealed
+                self.__memory[y][x] = -2  # Mark as revealed
                 return x, y, "reveal"
     
     def display_prob_table(self, prob_table: list) -> None:
