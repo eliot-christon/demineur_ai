@@ -69,12 +69,18 @@ class ProbaPlayer(Player):
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
+        self.__memory = None
 
     def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
         """
         Make a move based on the current state of the board. keep track of the probabilities of each cell being a mine.
         """
-        
+        if self.__memory:
+            obv_candidate = self.get_obvious_candidate()
+            if obv_candidate:
+                self.__memory[obv_candidate[1]][obv_candidate[0]] = -2  # Mark as revealed
+                return obv_candidate
+            
         # build a probability table of the size of the board, fill with -2 when revealed and -3 when flagged
         prob_table = [[-1 for _ in range(board.width)] for _ in range(board.height)]
         
@@ -124,29 +130,21 @@ class ProbaPlayer(Player):
                 elif cell.is_flagged():
                     prob_table[y][x] = -3
         
+        self.__memory = prob_table
+        
         # find the coordinates of the cell with the lowest probability of being a mine
+        obv_candidate = self.get_obvious_candidate()
+        if obv_candidate:
+            self.__memory[obv_candidate[1]][obv_candidate[0]] = -2  # Mark as revealed
+            return obv_candidate
+        
+        # reveal the safest not mine candidate, random if multiple
         prob_candidates = [prob for row in prob_table for prob in row if prob >= 0]
-        not_mine_candidates, mine_candidates = None, None
         if prob_candidates:
             lowest_prob = min(prob for row in prob_table for prob in row if prob >= 0)
             not_mine_candidates = [(x, y) for y in range(board.height) for x in range(board.width) if prob_table[y][x] == lowest_prob]
-        
-        # if there is a safe cell, 0. reveal it
-        if not_mine_candidates and lowest_prob < 0.1:
-            return not_mine_candidates[0][0], not_mine_candidates[0][1], "reveal"
-        
-        # find the coordinates of the cell with the highest probability
-        if prob_candidates:
-            highest_prob = max(prob for row in prob_table for prob in row if prob >= 0)
-            mine_candidates = [(x, y) for y in range(board.height) for x in range(board.width) if prob_table[y][x] == highest_prob]
-        
-        # if there is a cell with a high probability of being a mine, flag it
-        if mine_candidates and highest_prob >= 1.0:
-            return mine_candidates[0][0], mine_candidates[0][1], "flag"
-        
-        # reveal the safest not mine candidate, random if multiple
-        if not_mine_candidates:
             x, y = not_mine_candidates[randint(0, len(not_mine_candidates) - 1)]
+            self.__memory[x][y] = -2  # Mark as revealed
             return x, y, "reveal"
         
         # if no candidates, return a random cell
@@ -155,6 +153,7 @@ class ProbaPlayer(Player):
             x = randint(0, board.width - 1)
             y = randint(0, board.height - 1)
             if not (board.get_cell(x, y).is_revealed() or board.get_cell(x, y).is_flagged()):
+                self.__memory[x][y] = -2  # Mark as revealed
                 return x, y, "reveal"
     
     def display_prob_table(self, prob_table: list) -> None:
@@ -164,3 +163,14 @@ class ProbaPlayer(Player):
             print(" ".join("+"*(prob >= 0) 
                 + f"{prob:.2f}" for prob in row))
         print()
+        
+    def get_obvious_candidate(self) -> Optional[Tuple[int, int, str]]:
+        
+        if not self.__memory: return None
+        
+        for x in range(len(self.__memory)):
+            for y in range(len(self.__memory[0])):
+                if self.__memory[x][y] >= 1.0:
+                    return y, x, "flag"
+                elif self.__memory[x][y] < 0.1 and self.__memory[x][y] > 0:
+                    return y, x, "reveal"
