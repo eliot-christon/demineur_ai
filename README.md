@@ -1,5 +1,9 @@
 # Demineur Game 🎮
 
+<div align="center">
+  <img src="demineur_img.png" alt="Gameplay Preview" width="200"/>
+</div>
+
 Welcome to the Demineur Game repository! This project was a training experience for me, allowing me to improve my Python skills in a fun and engaging way. 🐍💻
 
 ## About the Project 🌟
