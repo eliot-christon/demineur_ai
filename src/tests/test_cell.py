@@ -1,5 +1,7 @@
-from src.core.cell import Cell
 import unittest
+
+from src.core.cell import Cell
+
 
 class TestCell(unittest.TestCase):
     def setUp(self):
@@ -10,24 +12,24 @@ class TestCell(unittest.TestCase):
         self.assertFalse(self.cell.is_revealed())
         self.assertFalse(self.cell.is_mine())
         self.assertFalse(self.cell.is_flagged())
-        
+
     def test_reveal(self):
         self.cell.reveal()
         self.assertTrue(self.cell.is_revealed())
-    
+
     def test_toggle_flag(self):
         self.cell.toggle_flag()
         self.assertTrue(self.cell.is_flagged())
         self.cell.toggle_flag()
         self.assertFalse(self.cell.is_flagged())
-        
+
     def test_set_adjacent_mines(self):
         self.cell.adjacent_mines = 3
         self.assertEqual(self.cell.adjacent_mines, 3)
-        
+
         with self.assertRaises(ValueError):
             self.cell.adjacent_mines = -2
-    
+
     def test_is_mine(self):
         self.assertFalse(self.cell.is_mine())
         self.cell.adjacent_mines = -1
@@ -36,4 +38,3 @@ class TestCell(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-        

@@ -1,5 +1,6 @@
 from src.core.game_logic import GameLogic
-from src.ui.colors import fg, bg
+from src.ui.colors import bg, fg
+
 
 class ConsoleUI:
     def __init__(self, game_logic: GameLogic) -> None:
@@ -30,7 +31,7 @@ class ConsoleUI:
             if len(action) != 3:
                 print("Invalid input. Please enter in the format: x y action")
                 continue
-            
+
             try:
                 x, y = int(action[0]), int(action[1])
                 action_type = action[2].lower()
@@ -53,7 +54,12 @@ class ConsoleUI:
                     if cell.is_mine():
                         print(bg.red + "M" + bg.res, end=" ")
                     else:
-                        print(self.__color_per_char.get(str(cell.adjacent_mines), "") + str(cell.adjacent_mines) + fg.res, end=" ")
+                        print(
+                            self.__color_per_char.get(str(cell.adjacent_mines), "")
+                            + str(cell.adjacent_mines)
+                            + fg.res,
+                            end=" ",
+                        )
                 elif cell.is_flagged():
                     print(bg.orange + fg.bold + "F" + bg.res + fg.res, end=" ")
                 else:
@@ -71,7 +77,8 @@ class ConsoleUI:
 
 # Example usage:
 if __name__ == "__main__":
-    from src.core.player import HumanPlayer, RandomPlayer
+    from src.core.player import HumanPlayer
+
     game_logic = GameLogic(width=5, height=5, mine_count=5, player=HumanPlayer(name="Player1"))
     console_ui = ConsoleUI(game_logic)
     console_ui.start_game()
