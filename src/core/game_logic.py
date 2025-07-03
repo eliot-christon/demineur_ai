@@ -12,7 +12,7 @@ class GameLogic:
         self.__player = player
         self.__game_over = False
         self.__game_won = False
-        
+
     def __place_mines(self) -> None:
         """Randomly place mines on the board."""
         count = 0
@@ -23,7 +23,7 @@ class GameLogic:
             if not cell.is_mine():
                 cell.adjacent_mines = -1
                 count += 1
-    
+
     def __init_adjacent_mine_counts(self) -> None:
         """Initialize the adjacent mine counts for each cell."""
         for y in range(self.__board.height):
@@ -39,26 +39,25 @@ class GameLogic:
                             if neighbor and neighbor.is_mine():
                                 count += 1
                     cell.adjacent_mines = count
-    
-    def make_move(self, x: int, y: int, action: str= "reveal") -> bool:
+
+    def make_move(self, x: int, y: int, action: str = "reveal") -> bool:
         """Make a move with the specified action at coordinates (x, y)."""
         if self.__game_over:
             return False
-        
+
         cell = self.__board.get_cell(x, y)
-        
+
         if cell is None:
             return False
-        
+
         if action == "reveal":
             cell.reveal()
             if cell.is_mine():
                 self.__game_over = True
                 self.__game_won = False
-            else:
-                if self.__check_win_condition():
-                    self.__game_over = True
-                    self.__game_won = True
+            elif self.__check_win_condition():
+                self.__game_over = True
+                self.__game_won = True
         elif action == "flag":
             if not cell.is_revealed():
                 cell.toggle_flag()
@@ -66,9 +65,9 @@ class GameLogic:
                 return False
         else:
             return False
-        
+
         return True
-                
+
     def __check_win_condition(self) -> bool:
         """Check if the player has won the game."""
         for row in self.__board.cells:
@@ -76,15 +75,15 @@ class GameLogic:
                 if not cell.is_mine() and not cell.is_revealed():
                     return False
         return True
-    
+
     def is_game_over(self) -> bool:
         """Check if the game is over."""
         return self.__game_over
-    
+
     def is_game_won(self) -> bool:
         """Check if the game has been won."""
         return self.__game_won
-    
+
     @property
     def board(self) -> Board:
         """Get the current state of the board."""
@@ -94,4 +93,3 @@ class GameLogic:
     def player(self) -> Player:
         """Get the current player."""
         return self.__player
-    

@@ -1,7 +1,7 @@
-from src.core.cell import Cell
+from random import randint
 from typing import List, Optional
 
-from random import randint
+from src.core.cell import Cell
 
 
 class Board:
@@ -14,10 +14,14 @@ class Board:
         return f"Board(width={self.__width}, height={self.__height})"
 
     def __eq__(self, other) -> bool:
-        if not isinstance(other, Board):    return False
-        if self.__width != other.width:     return False
-        if self.__height != other.height:   return False
-        if self.__cells != other.cells:     return False
+        if not isinstance(other, Board):
+            return False
+        if self.__width != other.width:
+            return False
+        if self.__height != other.height:
+            return False
+        if self.__cells != other.cells:
+            return False
         return True
 
     def __ne__(self, other) -> bool:
@@ -39,16 +43,16 @@ class Board:
         if 0 <= x < self.__width and 0 <= y < self.__height:
             return self.__cells[y][x]
         return None
-    
+
     def get_random_cell(self) -> Cell:
         x = randint(0, self.__width - 1)
         y = randint(0, self.__height - 1)
         return self.get_cell(x, y)
-    
+
     def get_revealed_count(self) -> int:
         """Count the number of revealed cells."""
         return sum(cell.is_revealed() for row in self.__cells for cell in row)
-    
+
     def get_flagged_count(self) -> int:
         """Count the number of flagged cells."""
         return sum(cell.is_flagged() for row in self.__cells for cell in row)
