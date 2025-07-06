@@ -37,10 +37,6 @@ class Player(ABC):
 
 
 class HumanPlayer(Player):
-    def __init__(self, name: str) -> None:
-        """Initialize the human player with a name."""
-        super().__init__(name)
-
     """Concrete class for a human player."""
 
     def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
@@ -48,10 +44,6 @@ class HumanPlayer(Player):
 
 
 class RandomPlayer(Player):
-    def __init__(self, name: str) -> None:
-        """Initialize the random player with a name."""
-        super().__init__(name)
-
     """Concrete class for a random player."""
 
     def make_move(self, board: Board) -> Optional[Tuple[int, str]]:

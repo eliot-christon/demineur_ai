@@ -2,11 +2,11 @@ import unittest
 
 from src.core.player import RandomPlayer
 from src.ui.console_ui import ConsoleUI
+from src.core.game_logic import GameLogic
 
 
 class TestConsoleUI(unittest.TestCase):
     def setUp(self):
-        from src.core.game_logic import GameLogic
 
         self.game_logic = GameLogic(
             width=9, height=5, mine_count=10, player=RandomPlayer(name="TestPlayer")

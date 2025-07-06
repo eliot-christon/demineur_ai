@@ -1,5 +1,8 @@
+"""
+This module provides a graphical user interface for the Minesweeper game using Pygame.
+It includes a PygameBoard class for rendering the game board and a GraphicalUI class for managing user interactions.
+"""
 from math import floor
-
 import pygame
 
 from src.core.board import Board
@@ -15,17 +18,7 @@ class PygameBoard:
         case_percentage: int = 95,
         bg_color: tuple[int, int, int] = (255, 255, 255),
         hidden_color: tuple[int, int, int] = (155, 155, 155),
-        empty_color: list[tuple[int, int, int]] = [
-            (80, 255, 80),  # 0
-            (80, 230, 120),  # 1
-            (80, 210, 145),  # 2
-            (80, 190, 170),  # 3
-            (80, 170, 190),  # 4
-            (80, 150, 200),  # 5
-            (80, 120, 220),  # 6
-            (80, 100, 240),  # 7
-            (0, 0, 250),
-        ],  # 8
+        empty_color: list[tuple[int, int, int]] = None,
         mine_color: tuple[int, int, int] = (255, 100, 100),
         progress_color: tuple[int, int, int] = (50, 255, 50),
     ) -> None:
@@ -39,6 +32,28 @@ class PygameBoard:
         )
         self.pixels_per_unit = pixels_per_unit
         self.screen = pygame.display.set_mode(self.pixel_dimension)
+        self.progress = 0.0
+        self.drop_down = 50
+        self.case_percentage = case_percentage
+        self.dimension = dimension
+        self.pixel_dimension = (
+            dimension[0] * pixels_per_unit,
+            dimension[1] * pixels_per_unit + self.drop_down,
+        )
+        self.pixels_per_unit = pixels_per_unit
+        self.screen = pygame.display.set_mode(self.pixel_dimension)
+        if empty_color is None:
+            empty_color = [
+                (80, 255, 80),  # 0
+                (80, 230, 120),  # 1
+                (80, 210, 145),  # 2
+                (80, 190, 170),  # 3
+                (80, 170, 190),  # 4
+                (80, 150, 200),  # 5
+                (80, 120, 220),  # 6
+                (80, 100, 240),  # 7
+                (0, 0, 250),
+            ]  # 8
         self.colors = {
             "bg": bg_color,
             "hidden": hidden_color,
@@ -48,6 +63,7 @@ class PygameBoard:
         }
         pygame.display.set_caption(name)
         self.display(Board(width=dimension[0], height=dimension[1]))
+
 
     def pixel2pos(self, pix_pos: tuple[int, int]) -> tuple[int, int]:
         """Return the position from a pixel position"""
@@ -127,13 +143,13 @@ class PygameBoard:
 class GraphicalUI:
     """Graphical user interface for the Minesweeper game using Pygame."""
 
-    def __init__(self, game_logic: GameLogic) -> None:
+    def __init__(self, in_game_logic: GameLogic) -> None:
         """Initialize the graphical UI with the game logic."""
         pygame.init()
-        self.game_logic = game_logic
+        self.game_logic = in_game_logic
         self.board = PygameBoard(
             name="Minesweeper",
-            dimension=(game_logic.board.width, game_logic.board.height),
+            dimension=(in_game_logic.board.width, in_game_logic.board.height),
             pixels_per_unit=20,
         )
 

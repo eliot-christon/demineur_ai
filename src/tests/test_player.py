@@ -20,8 +20,7 @@ class TestPlayer(unittest.TestCase):
     def test_make_move(self):
         board = Board(5, 5)
 
-        human_move = self.human_player.make_move(board)
-        self.assertIsNone(human_move, "Human player should return None for make_move.")
+        self.assertIsNone(self.human_player.make_move(board), "Human player should return None for make_move.")
 
         random_move = self.random_player.make_move(board)
         self.assertIsInstance(

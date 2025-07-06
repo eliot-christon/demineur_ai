@@ -3,9 +3,9 @@ from src.ui.colors import bg, fg
 
 
 class ConsoleUI:
-    def __init__(self, game_logic: GameLogic) -> None:
+    def __init__(self, in_game_logic: GameLogic) -> None:
         """Initialize the console UI with the game logic."""
-        self.game_logic = game_logic
+        self.game_logic = in_game_logic
         self.__color_per_char = {
             "0": fg.green,
             "1": fg.lightgreen,
