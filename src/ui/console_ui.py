@@ -26,9 +26,9 @@ class ConsoleUI:
             action = self.game_logic.player.make_move(self.game_logic.board)
             if action is None:
                 action_input = input("Enter your move (x y action): ").strip().split()
-                action = [int(coord) for coord in action_input[:2]] + action_input[2]
+                action = (int(action_input[0]), int(action_input[1]), action_input[2])
             if len(action) == 2:
-                action.append("reveal")
+                action = (action[0], action[1], "reveal")
             if len(action) != 3:
                 print("Invalid input. Please enter in the format: x y action")
                 continue

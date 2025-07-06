@@ -72,7 +72,7 @@ class PygameBoard:
         """Return the pixel position of a position"""
         return (pos[0] * self.pixels_per_unit, pos[1] * self.pixels_per_unit)
 
-    def draw_rectangle(self, pos: tuple[int, int], color= tuple[int, int, int]) -> None:
+    def draw_rectangle(self, pos: tuple[int, int], color=tuple[int, int, int]) -> None:
         pixel_margin = round((100 - self.case_percentage) * self.pixels_per_unit / 100)
         pixx, pixy = self.pos2pixel(pos)
         pixx, pixy = pixx + pixel_margin // 2, pixy + pixel_margin // 2
