@@ -25,6 +25,7 @@ urls.repository = "https://github.com/eliot-christon/demineur_ai"
 dev = [
   "pre_commit==4.2.0",
   "pylint==3.3.7",
+  "pytest-8.4.1"
 ]
 
 [tool.ruff]
