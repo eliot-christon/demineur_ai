@@ -174,9 +174,9 @@ class ProbaPlayer(Player):
         if not self.__memory:
             return None
 
-        for x in range(len(self.__memory)):
-            for y in range(len(self.__memory[0])):
-                if self.__memory[x][y] >= 1.0:
+        for x, row in enumerate(self.__memory):
+            for y, value in enumerate(row):
+                if value >= 1.0:
                     return y, x, "flag"
-                if self.__memory[x][y] < 0.1 and self.__memory[x][y] > 0:
+                if 0 < value < 0.1:
                     return y, x, "reveal"
