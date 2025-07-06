@@ -80,7 +80,7 @@ class ProbaPlayer(Player):
         # build a probability table of the size of the board, fill with -2 when revealed and -3 when flagged
         prob_table = [[-1 for _ in range(board.width)] for _ in range(board.height)]
 
-        # TODO: optimize is a key to the performance of this function, as it is called every turn.
+        # ATTENTION: optimizing is a key to the performance of this function, as it is called every turn.
 
         # Precompute directions for neighbor checks
         directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
