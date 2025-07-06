@@ -7,14 +7,14 @@ class Cell:
     def __repr__(self) -> str:
         return f"Cell(adjacent_mines={self.__adjacent_mines})"
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Cell):
             return False
         if self.__adjacent_mines != other.adjacent_mines:
             return False
         return True
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
     @property

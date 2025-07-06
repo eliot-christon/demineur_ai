@@ -20,13 +20,12 @@ classifiers = [
 dependencies = [
   "pygame==2.6.1",
 ]
-urls.repository = "https://github.com/eliot-christon/demineur_ai"
-[project.optional-dependencies]
-dev = [
-  "pre_commit==4.2.0",
+optional-dependencies.dev = [
+  "pre-commit==4.2",
   "pylint==3.3.7",
-  "pytest-8.4.1"
+  "pytest==8.4.1",
 ]
+urls.repository = "https://github.com/eliot-christon/demineur_ai"
 
 [tool.ruff]
 target-version = "py38"

@@ -25,7 +25,8 @@ class ConsoleUI:
             self.display_board()
             action = self.game_logic.player.make_move(self.game_logic.board)
             if action is None:
-                action = input("Enter your move (x y action): ").strip().split()
+                action_input = input("Enter your move (x y action): ").strip().split()
+                action = [int(coord) for coord in action_input[:2]] + action_input[2]
             if len(action) == 2:
                 action.append("reveal")
             if len(action) != 3:

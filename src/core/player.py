@@ -15,14 +15,14 @@ class Player(ABC):
     def __repr__(self) -> str:
         return f"Player(name={self.__name})"
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Player):
             return False
         if self.__name != other.name:
             return False
         return True
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
     @property
@@ -30,7 +30,7 @@ class Player(ABC):
         return self.__name
 
     @abstractmethod
-    def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
+    def make_move(self, board: Board) -> Optional[Tuple[int, int, str]]:
         """Make a move with the specified action at coordinates (x, y).
         returns a tuple containing the x, y coordinates and the action as a string.
         For the user interface to take input from human player we return None."""
@@ -39,14 +39,14 @@ class Player(ABC):
 class HumanPlayer(Player):
     """Concrete class for a human player."""
 
-    def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
+    def make_move(self, board: Board) -> Optional[Tuple[int, int, str]]:
         return None
 
 
 class RandomPlayer(Player):
     """Concrete class for a random player."""
 
-    def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
+    def make_move(self, board: Board) -> Optional[Tuple[int, int, str]]:
         """Make a random move on the board."""
         x = randint(0, board.width - 1)
         y = randint(0, board.height - 1)
@@ -54,6 +54,7 @@ class RandomPlayer(Player):
         while board.get_cell(x, y).is_revealed():
             x = randint(0, board.width - 1)
             y = randint(0, board.height - 1)
+
         return x, y, action
 
 
@@ -65,9 +66,9 @@ class ProbaPlayer(Player):
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
-        self.__memory = None
+        self.__memory = [[-1.0 for _ in range(5)] for _ in range(5)]
 
-    def make_move(self, board: Board) -> Optional[Tuple[int, str]]:
+    def make_move(self, board: Board) -> Optional[Tuple[int, int, str]]:
         """
         Make a move based on the current state of the board. keep track of the probabilities of each cell being a mine.
         """
@@ -78,7 +79,7 @@ class ProbaPlayer(Player):
                 return obv_candidate
 
         # build a probability table of the size of the board, fill with -2 when revealed and -3 when flagged
-        prob_table = [[-1 for _ in range(board.width)] for _ in range(board.height)]
+        prob_table = [[-1.0 for _ in range(board.width)] for _ in range(board.height)]
 
         # ATTENTION: optimizing is a key to the performance of this function, as it is called every turn.
 
@@ -103,7 +104,7 @@ class ProbaPlayer(Player):
                             elif not neighbor_cell.is_revealed():
                                 unrevealed_neighbors += 1
                                 # put the probability of being a mine to 0.
-                                prob_table[ny][nx] = max(prob_table[ny][nx], 0)
+                                prob_table[ny][nx] = max(prob_table[ny][nx], 0.0)
 
                     if unrevealed_neighbors > 0:
                         # distribute the probability of being a mine to the neighbors
@@ -180,3 +181,4 @@ class ProbaPlayer(Player):
                     return y, x, "flag"
                 if 0 < value < 0.1:
                     return y, x, "reveal"
+        return None

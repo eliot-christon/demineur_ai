@@ -2,7 +2,9 @@
 This module provides a graphical user interface for the Minesweeper game using Pygame.
 It includes a PygameBoard class for rendering the game board and a GraphicalUI class for managing user interactions.
 """
+
 from math import floor
+
 import pygame
 
 from src.core.board import Board
@@ -18,7 +20,17 @@ class PygameBoard:
         case_percentage: int = 95,
         bg_color: tuple[int, int, int] = (255, 255, 255),
         hidden_color: tuple[int, int, int] = (155, 155, 155),
-        empty_color: list[tuple[int, int, int]] = None,
+        empty_color: tuple[tuple[int, int, int], ...] = (
+            (80, 255, 80),  # 0
+            (80, 230, 120),  # 1
+            (80, 210, 145),  # 2
+            (80, 190, 170),  # 3
+            (80, 170, 190),  # 4
+            (80, 150, 200),  # 5
+            (80, 120, 220),  # 6
+            (80, 100, 240),  # 7
+            (0, 0, 250),  # 8
+        ),
         mine_color: tuple[int, int, int] = (255, 100, 100),
         progress_color: tuple[int, int, int] = (50, 255, 50),
     ) -> None:
@@ -42,18 +54,6 @@ class PygameBoard:
         )
         self.pixels_per_unit = pixels_per_unit
         self.screen = pygame.display.set_mode(self.pixel_dimension)
-        if empty_color is None:
-            empty_color = [
-                (80, 255, 80),  # 0
-                (80, 230, 120),  # 1
-                (80, 210, 145),  # 2
-                (80, 190, 170),  # 3
-                (80, 170, 190),  # 4
-                (80, 150, 200),  # 5
-                (80, 120, 220),  # 6
-                (80, 100, 240),  # 7
-                (0, 0, 250),
-            ]  # 8
         self.colors = {
             "bg": bg_color,
             "hidden": hidden_color,
@@ -64,7 +64,6 @@ class PygameBoard:
         pygame.display.set_caption(name)
         self.display(Board(width=dimension[0], height=dimension[1]))
 
-
     def pixel2pos(self, pix_pos: tuple[int, int]) -> tuple[int, int]:
         """Return the position from a pixel position"""
         return (floor(pix_pos[0] / self.pixels_per_unit), floor(pix_pos[1] / self.pixels_per_unit))
@@ -73,7 +72,7 @@ class PygameBoard:
         """Return the pixel position of a position"""
         return (pos[0] * self.pixels_per_unit, pos[1] * self.pixels_per_unit)
 
-    def draw_rectangle(self, pos: tuple[int, int], color=tuple[int, int, int]) -> None:
+    def draw_rectangle(self, pos: tuple[int, int], color= tuple[int, int, int]) -> None:
         pixel_margin = round((100 - self.case_percentage) * self.pixels_per_unit / 100)
         pixx, pixy = self.pos2pixel(pos)
         pixx, pixy = pixx + pixel_margin // 2, pixy + pixel_margin // 2
